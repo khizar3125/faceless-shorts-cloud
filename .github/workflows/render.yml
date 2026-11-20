@@ -1,0 +1,155 @@
+name: Faceless Short Render
+
+on:
+  workflow_dispatch:
+    inputs:
+      style:
+        description: Style id
+        required: true
+        default: deep-dive
+        type: choice
+        options: [deep-dive, night-file, inside-out, stick-story, paper-atlas, tall-tale]
+      short_name:
+        description: Project/short name
+        required: true
+        default: my-short
+      mode:
+        description: Voice timing mode
+        required: true
+        default: voice
+        type: choice
+        options: [voice, estimate]
+      draft:
+        description: Draft quality (faster, lower quality)
+        required: false
+        default: false
+        type: boolean
+  push:
+    paths:
+      - 'projects/**'
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      SKILL: ${{ github.workspace }}/.opencode/skills/faceless-shorts
+      FACELESS_HOME: ${{ github.workspace }}/.faceless-shorts-home
+      PROJECTS: ${{ github.workspace }}/projects
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install system deps (ffmpeg, chrome)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          # Google Chrome
+          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+          google-chrome --version
+
+      - name: Cache faceless home (models + venv)
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.FACELESS_HOME }}
+          key: faceless-home-${{ runner.os }}-${{ hashFiles('.opencode/skills/faceless-shorts/scripts/setup.sh') }}
+          restore-keys: faceless-home-${{ runner.os }}-
+
+      - name: Setup skill environment
+        run: |
+          export HOME=$HOME
+          export FACELESS_HOME=${{ env.FACELESS_HOME }}
+          bash "$SKILL/scripts/setup.sh"
+
+      - name: Resolve short name + style (push trigger)
+        if: github.event_name == 'push'
+        run: |
+          # pick first changed project dir
+          echo "Push trigger: rendering all changed projects handled below"
+
+      - name: Create project from style example if missing
+        run: |
+          STYLE="${{ github.event.inputs.style }}"
+          NAME="${{ github.event.inputs.short_name }}"
+          if [ "${{ github.event_name }}" = "push" ]; then
+            # render every project dir that exists
+            ls "$PROJECTS" 2>/dev/null || true
+          fi
+          if [ -n "$STYLE" ] && [ -n "$NAME" ]; then
+            if [ ! -d "$PROJECTS/$NAME" ]; then
+              bash "$SKILL/scripts/new_video.sh" "$STYLE" "$NAME" --dir "$PROJECTS"
+            fi
+          fi
+
+      - name: Render projects
+        run: |
+          set -e
+          STYLE="${{ github.event.inputs.style }}"
+          NAME="${{ github.event.inputs.short_name }}"
+          MODE="${{ github.event.inputs.mode }}"
+          DRAFT="${{ github.event.inputs.draft }}"
+          PY="$SKILL/scripts/py"
+          export FACELESS_HOME=${{ env.FACELESS_HOME }}
+          export CHROME=/usr/bin/google-chrome-stable
+          # Determine target projects
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TARGETS="$NAME"
+          else
+            TARGETS="$(ls "$PROJECTS" 2>/dev/null || true)"
+          fi
+          for PNAME in $TARGETS; do
+            P="$PROJECTS/$PNAME"
+            [ -d "$P" ] || continue
+            cd "$P"
+            echo "=== $PNAME ==="
+            if [ "$MODE" = "estimate" ]; then
+              "$PY" "$SKILL/scripts/estimate.py" . || true
+            else
+              "$PY" "$SKILL/scripts/voice.py" . && "$PY" "$SKILL/scripts/words.py" . || "$PY" "$SKILL/scripts/estimate.py" .
+            fi
+            node tools/capture.mjs check
+            node tools/capture.mjs cues && "$PY" tools/mix.py . || true
+            node tools/capture.mjs sheet review/all.jpg 1 8 || true
+            if [ "$DRAFT" = "true" ]; then
+              node tools/capture.mjs video renders/final.mp4 --draft
+            else
+              node tools/capture.mjs video renders/final.mp4
+            fi
+            cd "$GITHUB_WORKSPACE"
+          done
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: renders-${{ github.run_id }}
+          path: |
+            projects/*/renders/*.mp4
+            projects/*/review/all.jpg
+          retention-days: 30
+
+      - name: Create GitHub Release with MP4
+        if: github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: render-${{ github.run_id }}
+          name: Render ${{ github.run_id }}
+          files: |
+            projects/*/renders/*.mp4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
