@@ -1,3 +1,4 @@
+// render all
 // render pass 3
 // render pass 2
 // I SWAPPED BODIES WITH MY CAT — Stick Story

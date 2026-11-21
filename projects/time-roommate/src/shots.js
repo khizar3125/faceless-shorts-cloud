@@ -1,3 +1,4 @@
+// render all
 // render pass 2
 // MY ROOMMATE WAS A TIME TRAVELER — Inside Out 2D
 // Ren the roommate: labeled food, backwards clock, sticky notes, one pier.

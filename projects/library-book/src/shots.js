@@ -1,3 +1,4 @@
+// render all
 // render pass 3
 // render pass 2
 // THE BOOK THAT KNEW MY NAME — Paper Atlas

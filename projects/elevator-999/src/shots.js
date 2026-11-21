@@ -1,3 +1,4 @@
+// render all
 // THE ELEVATOR THAT WENT UP FOREVER — Stick Story
 // Dinesh, an elevator, floor numbers, one old woman, one brass button.
 import { ctx, W, H, TAU, clamp, lerp, seg, eo, eio, eob, rnd, rr, circle, ell, line, fillAll, bigText } from './core/lib.js';
