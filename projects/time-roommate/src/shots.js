@@ -126,6 +126,13 @@ function umbrella(x, y, s, col = '#C0553B') {
   ctx.strokeStyle = '#22283B'; ctx.lineWidth = 8; ctx.stroke();
   ctx.restore();
 }
+function thoughtBubble(x, y, s, t) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  ctx.fillStyle = '#FFFFFF'; ctx.strokeStyle = '#22283B'; ctx.lineWidth = 8;
+  for (const [dx, dy, r] of [[0, 0, 90], [-80, 20, 60], [80, 20, 60], [-40, -60, 55], [45, -55, 55]]) { ctx.beginPath(); ctx.arc(dx, dy, r, 0, TAU); ctx.fill(); ctx.stroke(); }
+  for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(-30 - i * 22, 110 + i * 26, 14 - i * 3, 0, TAU); ctx.fill(); ctx.stroke(); }
+  ctx.restore();
+}
 
 // ---------- shots ----------
 export function buildShots() {
@@ -183,7 +190,7 @@ export function buildShots() {
     room2(false);
     guy(360, 1250, 1.0, { t, shirt: '#C0553B', armsUp: 0.6 });
     guy(720, 1250, 1.0, { t: t + 0.5, shirt: '#4A6FA5', mood: 'smile' });
-    K.thoughtBubble(720, 560, 1.1, t);
+    thoughtBubble(720, 560, 1.1, t);
     ctx.font = `800 44px Inter`; ctx.textAlign = 'center'; ctx.fillStyle = '#22283B';
     ctx.fillText('How was the bus today?', 720, 520);
   }});

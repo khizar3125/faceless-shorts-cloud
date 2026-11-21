@@ -56,7 +56,6 @@ function officeBg() {
   line([[300, 1190], [300, 1450]], K.P.ink, 14); line([[780, 1190], [780, 1450]], K.P.ink, 14);
   rr(360, 1090, 90, 70, 10); ctx.fillStyle = '#C0553B'; ctx.fill();
   rr(560, 950, 220, 150, 10); ctx.fillStyle = '#17181C'; ctx.fill();
-  K.shell(false);
 }
 
 // ---------- shots ----------
@@ -69,7 +68,7 @@ export function buildShots() {
   add({ id: 'S01', at: cut(0), draw(lt, t) {
     officeBg();
     dinesh(540, K.GROUND - 40, 1, { t });
-    K.tag('42nd FLOOR', 540, 420, 0, 0, 84, seg(lt, 0.3, 0.7));
+    tag('42nd FLOOR', 540, 420, 84, seg(lt, 0.3, 0.7));
   }});
 
   add({ id: 'S02', at: cut(1), draw(lt, t) {
