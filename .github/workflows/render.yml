@@ -43,6 +43,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Setup Node 22
         uses: actions/setup-node@v4
@@ -109,7 +111,8 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             TARGETS="$NAME"
           else
-            TARGETS="$(ls "$PROJECTS" 2>/dev/null || true)"
+            TARGETS="$(git -C "$GITHUB_WORKSPACE" diff --name-only HEAD~1 HEAD -- projects/ | cut -d/ -f2 | sort -u | tr '\n' ' ')"
+            [ -z "$TARGETS" ] && TARGETS="$(ls "$PROJECTS" 2>/dev/null || true)"
           fi
           for PNAME in $TARGETS; do
             P="$PROJECTS/$PNAME"
