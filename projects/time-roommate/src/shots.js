@@ -1,3 +1,4 @@
+// render pass 2
 // MY ROOMMATE WAS A TIME TRAVELER — Inside Out 2D
 // Ren the roommate: labeled food, backwards clock, sticky notes, one pier.
 import { ctx, C, W, H, TAU, clamp, lerp, seg, eo, eio, eob, rnd, bigText, fillAll, circle, rr, ell, line } from './core/lib.js';

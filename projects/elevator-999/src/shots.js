@@ -173,7 +173,7 @@ export function buildShots() {
   }});
 
   add({ id: 'S15', at: cut(14), draw(lt, t) {
-    fillAll('#12131A'); K.shell(true);
+    fillAll('#12131A');
     ctx.globalAlpha = 0.9; ell(540, 1150, 420, 60, '#2A2C38'); ctx.globalAlpha = 1;
     brassButton(540, 1120, 1.1, 0.3 + 0.2 * Math.sin(t * 2));
     line([[540, 1500], [540, 1260]], '#E8B98A', 34); circle(540, 1230, 44, '#E8B98A');

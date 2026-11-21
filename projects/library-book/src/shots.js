@@ -1,3 +1,4 @@
+// render pass 2
 // THE BOOK THAT KNEW MY NAME — Paper Atlas
 // Vienna, 1897: a blank book that shows every reader a different story.
 import { ctx, W, H, TAU, clamp, lerp, seg, eo, eio, eob, rnd, rr, circle, ell, line } from './core/lib.js';
