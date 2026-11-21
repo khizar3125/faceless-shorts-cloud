@@ -1,0 +1,30 @@
+{
+  "title": "The Day My Shadow Quit",
+  "voice": "am_puck",
+  "speed": 1.0,
+  "lead": 0.35,
+  "outro": 1.0,
+  "gap": 0.26,
+  "music": "bed",
+  "sources": [
+    "Original fictional story written for this channel. No factual claims."
+  ],
+  "lines": [
+    { "text": "My shadow and I used to do everything together.", "caps": "My *shadow | and *I | did *everything | together." },
+    { "text": "But lately, he'd been acting… weird.", "caps": "But *lately, | he's been… *weird." },
+    { "text": "Then one morning, I found a note on the floor.", "caps": "One *morning, | I found a *note." },
+    { "text": "It said: I QUIT. Signed, your shadow.", "caps": "It said: *I QUIT. | Signed, your *shadow." },
+    { "text": "He said he was tired of copying me all day.", "caps": "Tired of *copying me | all *day." },
+    { "text": "So he left. And honestly? He's thriving.", "caps": "So he *left. | And he's… *thriving." },
+    { "text": "He dances in the park. He high-fives pigeons.", "caps": "He *dances | in the *park." },
+    { "text": "He even got a tan. I don't know how.", "caps": "He got a *tan. | I don't know *how." },
+    { "text": "And me? I just felt flat. Like paper.", "caps": "And *me? | I felt… *flat." },
+    { "text": "No one laughed at my jokes. Not even me.", "caps": "No one *laughed | at my *jokes." },
+    { "text": "So I did the one thing he never saw me do.", "caps": "So I did the *one thing | he never *saw." },
+    { "text": "I danced. Badly. In public. In the rain.", "caps": "I *danced. | *Badly. | In *public." },
+    { "text": "And that's exactly when he came back.", "caps": "And *that's | when he came *back." },
+    { "text": "He said: you got interesting. I'm in.", "caps": "'You got *interesting. | I'm *in.'" },
+    { "text": "Now we take turns leading the way.", "caps": "Now we take *turns | leading the *way." },
+    { "text": "He still won't do the laundry, though.", "caps": "He still *won't | do the *laundry, *though." }
+  ]
+}
