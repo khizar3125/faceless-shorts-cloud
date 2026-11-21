@@ -1,6 +1,6 @@
 // Inside Out engine: the COMPONENT ZOO. Every reusable thing on screen lives here.
 // All functions draw immediately with the shared ctx, in 1080x1920 canvas pixels unless a scale is given.
-import { ctx, C, W, H, TAU, lerp, clamp, rnd, rr, circle, ell, line, fillAll } from './lib.js';
+import { ctx, C, W, H, Math.PI * 2, lerp, clamp, rnd, rr, circle, ell, line, fillAll } from './lib.js';
 
 // ═════════════════════════ PROPS ═════════════════════════
 /** a piece of gum (pill shape). s = scale (1 = 80x52 px) */
@@ -106,7 +106,7 @@ export function warning(x, y, s) {
 /** "enzyme" chomper: pink pac-man. open = mouth angle (rad), flip = face left */
 export function chomper(x, y, r, open, flip) {
   ctx.save(); ctx.translate(x, y); if (flip) ctx.scale(-1, 1);
-  ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, r, open, TAU - open); ctx.closePath(); ctx.fillStyle = C.pink; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, r, open, Math.PI * 2 - open); ctx.closePath(); ctx.fillStyle = C.pink; ctx.fill();
   ctx.lineWidth = 6; ctx.strokeStyle = C.pinkDark; ctx.stroke(); circle(r * 0.15, -r * 0.5, r * 0.13, C.ink);
   ctx.restore();
 }
@@ -159,7 +159,7 @@ export function insideStomach(t, acid = 1) {
   fillAll(C.stomachBg);
   for (let i = 0; i < 7; i++) circle(rnd(i) * W + Math.sin(t + i) * 20, rnd(i + 9) * H + Math.cos(t * 0.8 + i) * 20, 120 + rnd(i + 3) * 140, C.stomachBgDark);
   ctx.beginPath();
-  for (let a = 0; a <= TAU + 0.01; a += 0.05) {
+  for (let a = 0; a <= Math.PI * 2 + 0.01; a += 0.05) {
     const r = 1 + 0.035 * Math.sin(3 * a + t * 2) + 0.02 * Math.sin(5 * a - t * 3);
     const x = 540 + 480 * r * Math.cos(a), y = 880 + 660 * r * Math.sin(a); a === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
   }
@@ -172,7 +172,7 @@ export function insideStomach(t, acid = 1) {
     ctx.fillStyle = C.yellow; ctx.globalAlpha = 0.55 * acid; ctx.fill(); ctx.globalAlpha = 1;
     for (let i = 0; i < 16; i++) {
       const ph = (t * 0.6 + rnd(i)) % 1; ctx.globalAlpha = 0.85 * (1 - ph) * acid;
-      ctx.beginPath(); ctx.arc(120 + rnd(i + 20) * 840 + Math.sin(t * 3 + i) * 12, 1400 - ph * 700, 10 + rnd(i + 5) * 18, 0, TAU);
+      ctx.beginPath(); ctx.arc(120 + rnd(i + 20) * 840 + Math.sin(t * 3 + i) * 12, 1400 - ph * 700, 10 + rnd(i + 5) * 18, 0, Math.PI * 2);
       ctx.strokeStyle = C.yellow; ctx.lineWidth = 6; ctx.stroke();
     }
     ctx.globalAlpha = 1;
@@ -261,7 +261,7 @@ function skeletonTorso(pulse) {
   for (const sd of [-1, 1]) {
     ctx.lineWidth = 13; ctx.beginPath(); ctx.moveTo(sd * 22, -186); ctx.quadraticCurveTo(sd * 80, -202, sd * 146, -180); ctx.stroke();
     for (let i = 0; i < 6; i++) { const y = -150 + i * 37; ctx.lineWidth = 11; ctx.beginPath(); ctx.moveTo(sd * 18, y); ctx.quadraticCurveTo(sd * 152, y - 26, sd * 116, y + 56); ctx.stroke(); }
-    ctx.lineWidth = 12; ctx.beginPath(); ctx.ellipse(sd * 72, 232, 74, 46, 0, Math.PI, TAU); ctx.stroke();
+    ctx.lineWidth = 12; ctx.beginPath(); ctx.ellipse(sd * 72, 232, 74, 46, 0, Math.PI, Math.PI * 2); ctx.stroke();
   }
   line([[0, -205], [-4, -80]], C.pink, 22);
   stomach(20, 10, 0.8, pulse);
@@ -285,7 +285,7 @@ function head(o) {
   ctx.beginPath(); ctx.moveTo(20, -32 - br - tl * 8 + fr * 12); ctx.quadraticCurveTo(44, -42 - br - tl * 10, 66, -28 - br - tl * 6 - fr * 6); ctx.stroke();
   // eyes: 'n' | 'wide' | 'closed'
   if (o.eyes === 'wide') {
-    for (const sd of [-1, 1]) { ctx.beginPath(); ctx.ellipse(sd * 40, 6, 24, 27, 0, 0, TAU); ctx.fillStyle = C.white; ctx.fill(); ctx.lineWidth = 4; ctx.strokeStyle = C.ink; ctx.stroke(); circle(sd * 40, 8, 12, C.ink); circle(sd * 40 + 4, 3, 4, C.white); }
+    for (const sd of [-1, 1]) { ctx.beginPath(); ctx.ellipse(sd * 40, 6, 24, 27, 0, 0, Math.PI * 2); ctx.fillStyle = C.white; ctx.fill(); ctx.lineWidth = 4; ctx.strokeStyle = C.ink; ctx.stroke(); circle(sd * 40, 8, 12, C.ink); circle(sd * 40 + 4, 3, 4, C.white); }
   } else if (o.eyes === 'closed') {
     for (const sd of [-1, 1]) { ctx.beginPath(); ctx.arc(sd * 40, 2, 13, 0.15 * Math.PI, 0.85 * Math.PI); ctx.strokeStyle = C.ink; ctx.lineWidth = 7; ctx.stroke(); }
   } else {
@@ -440,7 +440,7 @@ export function proofDoc(x, y, s, rot, fill, stamp, verdict = 'UNPROVEN') {
 export function magnifier(x, y, s, a = 1, lensTint = C.cyan) {
   if (a <= 0) return;
   ctx.save(); ctx.globalAlpha = a; ctx.translate(x, y); ctx.scale(s, s);
-  ctx.beginPath(); ctx.arc(0, 0, 150, 0, TAU);
+  ctx.beginPath(); ctx.arc(0, 0, 150, 0, Math.PI * 2);
   ctx.fillStyle = lensTint; ctx.globalAlpha = a * 0.35; ctx.fill(); ctx.globalAlpha = a;
   ctx.lineWidth = 22; ctx.strokeStyle = C.ink; ctx.stroke();
   ctx.lineWidth = 34; ctx.beginPath(); ctx.moveTo(106, 106); ctx.lineTo(196, 196); ctx.stroke();
@@ -464,7 +464,7 @@ export function vsSplit(split, t, labelL = 'HUMAN', labelR = 'AI') {
   const pop = 1 + Math.sin(t * 6) * 0.05;
   ctx.save(); ctx.translate(cx, 960); ctx.scale(pop, pop);
   circle(0, 0, 96, C.yellow); ctx.lineWidth = 14; ctx.strokeStyle = C.ink;
-  ctx.beginPath(); ctx.arc(0, 0, 96, 0, TAU); ctx.stroke();
+  ctx.beginPath(); ctx.arc(0, 0, 96, 0, Math.PI * 2); ctx.stroke();
   ctx.fillStyle = C.ink; ctx.font = '900 92px Inter'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillText('VS', 0, 6);
   ctx.restore();
