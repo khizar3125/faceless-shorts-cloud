@@ -144,13 +144,22 @@ jobs:
             projects/*/review/all.jpg
           retention-days: 30
 
+      - name: Zip renders for release
+        if: always()
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          zip -r renders-${{ github.run_id }}.zip projects/*/renders/*.mp4 projects/*/review/all.jpg
+          ls -lh renders-*.zip
+
       - name: Create GitHub Release with MP4
-        if: github.event_name == 'workflow_dispatch'
+        if: always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         uses: softprops/action-gh-release@v2
         with:
           tag_name: render-${{ github.run_id }}
           name: Render ${{ github.run_id }}
           files: |
             projects/*/renders/*.mp4
+            projects/*/review/all.jpg
+            renders-*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
