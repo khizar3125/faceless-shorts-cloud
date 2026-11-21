@@ -1,6 +1,6 @@
 // RIEMANN HYPOTHESIS: the shot list (rewritten per video with script.json).
 // A shot: { id, at, cam: [cx, cy], zoom, note, draw(lt, d, t) }  · lt = time in shot, d = shot length, t = film time.
-import { ctx, C, W, H, clamp, lerp, seg, eo, eio, eob, rnd, bigText, fillAll } from './core/lib.js';
+import { ctx, C, W, H, TAU, clamp, lerp, seg, eo, eio, eob, rnd, bigText, fillAll, circle, rr } from './core/lib.js';
 import { L, Le, Wd, T } from './core/timing.js';
 import * as K from './core/kit.js';
 
