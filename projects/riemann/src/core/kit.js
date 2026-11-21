@@ -1,6 +1,6 @@
 // Inside Out engine: the COMPONENT ZOO. Every reusable thing on screen lives here.
 // All functions draw immediately with the shared ctx, in 1080x1920 canvas pixels unless a scale is given.
-import { ctx, C, W, H, Math.PI * 2, lerp, clamp, rnd, rr, circle, ell, line, fillAll } from './lib.js';
+import { ctx, C, W, H, lerp, clamp, rnd, rr, circle, ell, line, fillAll } from './lib.js';
 
 // ═════════════════════════ PROPS ═════════════════════════
 /** a piece of gum (pill shape). s = scale (1 = 80x52 px) */
