@@ -149,10 +149,10 @@ export function buildShots() {
     add({ id: 'S09', at: st, cam: [540, 900], note: 'calendar 11, stopwatch spinning',
       draw(lt) {
         fillAll(C.bg);
-        K.calendar(420, 950, 2.2, '11', 'DAYS', Math.sin(lt * 1.5) * 0.04);
-        K.stopwatch(820, 950, 2.0, lt * 3);
-        if (lt > eleven) bigText('264 HOURS', 540, 420, 120, C.red, -0.02, eob(seg(lt, eleven, eleven + 0.25)));
-        K.pill('WORLD RECORD', 540, 1420, 56, C.ink, C.white, eob(seg(lt, 0.2, 0.5)));
+        K.calendar(370, 980, 1.5, '11', 'DAYS', Math.sin(lt * 1.5) * 0.04);
+        K.stopwatch(860, 980, 1.4, lt * 3);
+        if (lt > eleven) bigText('264 HOURS', 540, 400, 100, C.red, -0.02, eob(seg(lt, eleven, eleven + 0.25)));
+        K.pill('WORLD RECORD', 540, 1500, 52, C.ink, C.white, eob(seg(lt, 0.2, 0.5)));
       } });
     cue(st, 'whoosh'); cue(st + 0.2, 'tock', { dur: 1.6 }); cue(st + eleven, 'thud');
   }
