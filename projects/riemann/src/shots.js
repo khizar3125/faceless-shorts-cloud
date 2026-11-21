@@ -1,6 +1,6 @@
 // RIEMANN HYPOTHESIS: the shot list (rewritten per video with script.json).
 // A shot: { id, at, cam: [cx, cy], zoom, note, draw(lt, d, t) }  · lt = time in shot, d = shot length, t = film time.
-import { ctx, C, W, H, clamp, lerp, seg, eo, eio, eob, rnd, bigText } from './core/lib.js';
+import { ctx, C, W, H, clamp, lerp, seg, eo, eio, eob, rnd, bigText, fillAll } from './core/lib.js';
 import { L, Le, Wd, T } from './core/timing.js';
 import * as K from './core/kit.js';
 
@@ -15,7 +15,7 @@ export function buildShots() {
     const st = cut(0), ai = Wd('ai', 0) - st, hard = Wd('hardest', 0) - st;
     add({ id: 'S01', at: st, cam: [540, 900], note: 'robot appears, question mark, shock',
       draw(lt) {
-        K.fillAll(C.bg);
+        fillAll(C.bg);
         // faint prime grid backdrop
         ctx.save(); ctx.globalAlpha = 0.14; K.primesGrid(40, 260, 12, 84, lt, 1); ctx.restore();
         const pop = eob(seg(lt, 0.1, 0.55));
@@ -32,7 +32,7 @@ export function buildShots() {
     const st = cut(1), yrs = Wd('167', 1) - st;
     add({ id: 'S02', at: st, cam: [540, 880], note: 'calendar flips 1859 → today, 167 lands',
       draw(lt) {
-        K.fillAll(C.bg);
+        fillAll(C.bg);
         const spin = eo(seg(lt, 0.05, yrs + 0.3)) * 6;
         K.calendar(540, 900, 2.6, String(Math.round(lerp(1859, 2026, eo(seg(lt, 0.1, Math.max(0.4, yrs)))))) , 'OPEN', spin * 0.12);
         if (lt > yrs) {
@@ -49,7 +49,7 @@ export function buildShots() {
     const st = cut(2), rule = Wd('rule', 2) - st, hide = Wd('hide', 2) - st;
     add({ id: 'S03', at: st, cam: [540, 960], note: 'prime grid lights up, one prime glows',
       draw(lt) {
-        K.fillAll(C.bg);
+        fillAll(C.bg);
         const rev = eio(seg(lt, 0.1, Math.max(0.6, rule + 0.3)));
         K.primesGrid(108, 480, 10, 86, lt, rev, lt > hide ? Math.floor((lt * 6) % 100) : -1);
         K.pill('PRIMES', 540, 340, 66, C.cyan, C.ink, eob(seg(lt, 0.15, 0.45)));
@@ -64,7 +64,7 @@ export function buildShots() {
     const st = cut(3), win = Wd('win', 3) - st, mil = Wd('million', 3) - st;
     add({ id: 'S04', at: st, cam: [540, 960], note: 'prize check slams in, cash burst',
       draw(lt) {
-        K.fillAll(C.bg);
+        fillAll(C.bg);
         const sc = eob(seg(lt, 0.1, Math.max(0.4, win)));
         K.prizeCheck(540, 950, sc, -0.06 + Math.sin(lt * 2) * 0.02);
         if (lt > mil) {
@@ -86,7 +86,7 @@ export function buildShots() {
     const st = cut(4), claims = Wd('claims', 4) - st, proved = Wd('proved', 4) - st;
     add({ id: 'S05', at: st, cam: [540, 940], note: 'man + robot hold up finished proof doc',
       draw(lt) {
-        K.fillAll(C.bg);
+        fillAll(C.bg);
         K.man({ x: 300, y: 1330, s: 1.5, mouth: 'smile', eyes: 'n', brow: 0.4, arm: K.armPose(K.ARM.down, K.ARM.point, eio(seg(lt, 0.2, 0.7))) });
         K.robot(800, 1180, 1.2, lt, (lt * 1.3) % 1 < 0.1 ? 1 : 0, 1);
         const fill = eio(seg(lt, 0.15, Math.max(0.7, claims)));
@@ -102,7 +102,7 @@ export function buildShots() {
     const st = cut(5), elude = Wd('eluded', 5) - st;
     add({ id: 'S06', at: st, cam: [540, 860], note: 'line of geniuses, red X marks, they fail',
       draw(lt) {
-        K.fillAll(C.bg);
+        fillAll(C.bg);
         for (let i = 0; i < 4; i++) {
           const x = 200 + i * 226, appear = eob(seg(lt, 0.1 + i * 0.14, 0.4 + i * 0.14));
           ctx.save(); ctx.translate(x, 1080); ctx.scale(appear, appear);
@@ -136,7 +136,7 @@ export function buildShots() {
     const st = cut(7), duel = Wd('dueling', 7) - st, mach = Wd('machine', 7) - st;
     add({ id: 'S08', at: st, cam: [540, 960], note: 'two proof docs clash with sparks',
       draw(lt) {
-        K.fillAll(C.bg);
+        fillAll(C.bg);
         const lunge = Math.sin(lt * 9) * 26;
         K.proofDoc(330 - lunge, 880, 1.0, -0.14, 1, 1, 'PROOF A');
         K.proofDoc(750 + lunge, 880, 1.0, 0.14, 1, 1, 'PROOF B');
@@ -162,7 +162,7 @@ export function buildShots() {
     const st = cut(8), cert = Wd('certainly', 8) - st, trueW = Wd('true', 8) - st;
     add({ id: 'S09', at: st, cam: [540, 900], note: 'big check + crowd nodding',
       draw(lt) {
-        K.fillAll(C.bg);
+        fillAll(C.bg);
         ctx.save(); ctx.globalAlpha = 0.2; K.primesGrid(108, 420, 10, 86, lt, 1); ctx.restore();
         const pop = eob(seg(lt, 0.15, Math.max(0.5, cert)));
         circle(540, 880, 300 * pop, C.cyan);
@@ -186,7 +186,7 @@ export function buildShots() {
     const st = cut(9), wrong = Wd('wrong', 9) - st, coll = Wd('collapses', 9) - st;
     add({ id: 'S10', at: st, cam: [540, 940], note: 'proof bricks wobble, crack, collapse',
       draw(lt) {
-        K.fillAll(C.bg);
+        fillAll(C.bg);
         const shaky = lt > wrong ? (lt - wrong) * 40 : 0;
         const cols = 4, bw = 180, bh = 110, x0 = 540 - (cols * bw) / 2;
         for (let r = 0; r < 4; r++) for (let c = 0; c < cols; c++) {
@@ -213,7 +213,7 @@ export function buildShots() {
     const st = cut(10), ai = Wd('ai', 10) - st, yet = Wd('yet', 10) - st;
     add({ id: 'S11', at: st, cam: [540, 900], note: 'robot shrugs at question mark, loop end',
       draw(lt) {
-        K.fillAll(C.bg);
+        fillAll(C.bg);
         ctx.save(); ctx.globalAlpha = 0.16; K.primesGrid(40, 300, 12, 84, lt, 1); ctx.restore();
         K.robot(540, 1150, 1.3, lt, (lt * 1.4) % 1 < 0.12 ? 1 : 0, 0);
         // shrug bob
