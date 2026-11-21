@@ -1,0 +1,26 @@
+{
+  "title": "The Great Emu War",
+  "voice": "bm_george",
+  "speed": 1.05,
+  "lead": 0.4,
+  "outro": 1.2,
+  "gap": 0.3,
+  "music": "bed",
+  "sources": [
+    "National Museum of Australia, 'The Great Emu War' (November 1932, Western Australia; military deployed after emus damaged wheat crops; ~20,000 emus targeted)",
+    "Australian War Memorial records: soldiers with Lewis guns fired ~2,500 rounds; 2,500 emus reported killed; emus 'won' the campaign",
+    "Contemporary reports (1932): emus outran the soldiers, split into small groups, often 'unscathed'; the military withdrew after a few weeks"
+  ],
+  "lines": [
+    { "text": "In nineteen thirty-two, Australia declared war on birds.", "caps": "In *1932, | Australia declared *war | on *birds." },
+    { "text": "Thousands of emus were eating the farmers' wheat crops.", "caps": "Thousands of *emus | ate the farmers' *wheat." },
+    { "text": "So the government sent soldiers with machine guns to fix it.", "caps": "The *government sent | *soldiers | with machine *guns." },
+    { "text": "But the emus had other plans.", "caps": "But the emus | had other *plans." },
+    { "text": "They split into small groups and outran the army.", "caps": "They *split up | and outran the *army." },
+    { "text": "The soldiers fired thousands of rounds, mostly missing.", "caps": "They fired *thousands | of *rounds, | mostly *missing." },
+    { "text": "One soldier said the emus were like tanks.", "caps": "One soldier said | the emus | were like *tanks." },
+    { "text": "After a few weeks, the military gave up and went home.", "caps": "The military *gave up | and went *home." },
+    { "text": "The emus won the war.", "caps": "The emus | *won | the war." },
+    { "text": "And Australia never tried to fight birds again.", "caps": "Australia never | tried to fight | *birds again." }
+  ]
+}
