@@ -473,3 +473,185 @@ export function vsSplit(split, t, labelL = 'HUMAN', labelR = 'AI') {
   ctx.save(); ctx.translate(cx + 250, 460); ctx.rotate(0.1); ctx.fillText(labelR, 0, 0); ctx.restore();
   ctx.restore();
 }
+
+// ═════════════════════════ NEW COMPONENTS (sleep + black hole) ═════════════════════════
+/** simple bed. zs = alpha of floating Zs (0 = none) */
+export function bed(x, y, s, zs = 0) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  rr(-260, -150, 70, 310, 16); ctx.fillStyle = C.pot; ctx.fill(); ctx.lineWidth = 7; ctx.strokeStyle = C.ink; ctx.stroke();
+  rr(-200, 60, 470, 40, 10); ctx.fillStyle = C.hair; ctx.fill(); ctx.stroke();
+  rr(-200, 18, 470, 62, 18); ctx.fillStyle = C.white; ctx.fill(); ctx.stroke();
+  rr(-185, -14, 130, 52, 20); ctx.fillStyle = C.sky; ctx.fill(); ctx.stroke();
+  rr(-30, -2, 300, 74, 26); ctx.fillStyle = C.cyan; ctx.fill(); ctx.stroke();
+  if (zs > 0) { ctx.globalAlpha = clamp(zs); ctx.fillStyle = C.ink; ctx.font = '900 64px Inter';
+    ctx.fillText('Z', 160, -110); ctx.font = '900 44px Inter'; ctx.fillText('Z', 230, -180); ctx.globalAlpha = 1; }
+  ctx.restore();
+}
+
+/** pink brain with folds. dark 0..1 shuts sections down */
+export function brain(x, y, s, t, dark = 0) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  ell(-50, 0, 106, 90, C.pink); ell(50, 0, 106, 90, C.pinkLight);
+  ctx.strokeStyle = C.pinkDark; ctx.lineWidth = 9; ctx.lineCap = 'round';
+  for (let i = 0; i < 5; i++) {
+    ctx.beginPath(); ctx.moveTo(-118 + i * 52, -62 + Math.sin(t * 2 + i) * 8);
+    ctx.quadraticCurveTo(-96 + i * 52, 0, -118 + i * 52, 62); ctx.stroke();
+  }
+  rr(-22, 82, 44, 46, 14); ctx.fillStyle = C.pinkDark; ctx.fill();
+  if (dark > 0) {
+    ctx.save(); ctx.beginPath(); ctx.ellipse(-50, 0, 106, 90, 0, 0, Math.PI * 2); ctx.clip();
+    ctx.fillStyle = C.navy; ctx.globalAlpha = clamp(dark); ctx.fillRect(-160, -95, 240, 200); ctx.restore();
+  }
+  ctx.restore();
+}
+
+/** flat astronaut. rot = tilt, t = float wobble */
+export function astronaut(x, y, s, rot = 0, t = 0) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  rr(-66, -118, 132, 205, 26); ctx.fillStyle = C.white; ctx.fill(); ctx.lineWidth = 8; ctx.strokeStyle = C.ink; ctx.stroke();
+  rr(-50, -108, 100, 185, 28); ctx.fillStyle = C.white; ctx.fill(); ctx.stroke();
+  circle(0, -188, 76, C.white);
+  ctx.beginPath(); ctx.arc(0, -188, 76, 0, Math.PI * 2); ctx.lineWidth = 8; ctx.strokeStyle = C.ink; ctx.stroke();
+  ell(0, -188, 52, 42, C.navy); ell(-16, -202, 13, 9, C.cyan);
+  ctx.strokeStyle = C.white; ctx.lineWidth = 30; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(-56, -40); ctx.lineTo(-108, 36 + Math.sin(t * 2) * 10); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(56, -40); ctx.lineTo(108, 36 - Math.sin(t * 2) * 10); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-28, 78); ctx.lineTo(-40, 168); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(28, 78); ctx.lineTo(40, 168); ctx.stroke();
+  ctx.restore();
+}
+
+/** black hole: accretion glow, yellow ring, navy void, swirl */
+export function blackHole(x, y, r, t, ring = 1) {
+  ctx.save(); ctx.translate(x, y);
+  for (let i = 3; i >= 1; i--) { ctx.globalAlpha = 0.1 * ring; circle(0, 0, r * (1 + i * 0.18), C.yellow); }
+  ctx.globalAlpha = 1;
+  ctx.beginPath(); ctx.arc(0, 0, r * 1.06, 0, Math.PI * 2); ctx.strokeStyle = C.yellow; ctx.lineWidth = r * 0.09; ctx.stroke();
+  ctx.beginPath(); ctx.arc(0, 0, r * 1.17, 0, Math.PI * 2); ctx.strokeStyle = C.cyan; ctx.lineWidth = r * 0.035; ctx.stroke();
+  circle(0, 0, r, C.navy);
+  ctx.strokeStyle = C.pinkLight; ctx.lineWidth = Math.max(4, r * 0.03); ctx.globalAlpha = 0.45;
+  for (let k = 0; k < 3; k++) { ctx.beginPath(); ctx.arc(0, 0, r * (0.5 + k * 0.16), t * 0.8 + k, t * 0.8 + k + 2.2); ctx.stroke(); }
+  ctx.restore();
+}
+
+/** twinkling stars across the frame */
+export function starfield(t, n = 70, alpha = 1) {
+  ctx.save();
+  for (let i = 0; i < n; i++) {
+    const x = rnd(i) * 1200 - 60, y = rnd(i + 50) * 2000 - 40;
+    ctx.globalAlpha = alpha * (0.3 + 0.55 * (0.5 + 0.5 * Math.sin(t * 3 + i)));
+    circle(x, y, 2 + rnd(i + 9) * 3, C.white);
+  }
+  ctx.restore();
+}
+
+/** shield with optional crack 0..1 */
+export function shield(x, y, s, crack = 0) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  ctx.beginPath(); ctx.moveTo(0, -140); ctx.lineTo(120, -90); ctx.quadraticCurveTo(120, 60, 0, 150);
+  ctx.quadraticCurveTo(-120, 60, -120, -90); ctx.closePath();
+  ctx.fillStyle = C.cyan; ctx.fill(); ctx.lineWidth = 9; ctx.strokeStyle = C.ink; ctx.stroke();
+  ctx.globalAlpha = 0.5; ctx.fillStyle = C.white;
+  ctx.beginPath(); ctx.moveTo(0, -120); ctx.lineTo(58, -90); ctx.lineTo(0, 8); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1;
+  if (crack > 0) {
+    ctx.strokeStyle = C.red; ctx.lineWidth = 9; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(0, -140); ctx.lineTo(18, -50); ctx.lineTo(-24, 10); ctx.lineTo(10, 70); ctx.lineTo(-6, 150);
+    ctx.setLineDash([26 * crack, 18 * crack]); ctx.stroke(); ctx.setLineDash([]);
+  }
+  ctx.restore();
+}
+
+// ═════════════════════════ NEW COMPONENTS (Earworm short) ═════════════════════════
+/** a beamed eighth-note. s = scale, rot = tilt, color = note head colour */
+export function musicNote(x, y, s, rot = 0, color = C.yellow) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  // note head (eighth note, tilted)
+  ctx.beginPath(); ctx.ellipse(-46, 0, 34, 26, -0.55, 0, Math.PI * 2); ctx.fillStyle = color; ctx.fill();
+  ctx.lineWidth = 9; ctx.strokeStyle = C.ink; ctx.stroke();
+  // stem
+  ctx.lineCap = 'round'; ctx.lineWidth = 12;
+  ctx.beginPath(); ctx.moveTo(-22, -8); ctx.lineTo(-22, -150); ctx.stroke();
+  // flag
+  ctx.beginPath(); ctx.moveTo(-22, -150); ctx.quadraticCurveTo(30, -120, 18, -70); ctx.quadraticCurveTo(46, -104, 34, -150); ctx.closePath();
+  ctx.fillStyle = color; ctx.fill(); ctx.lineWidth = 7; ctx.stroke();
+  ctx.restore();
+}
+
+/** a thought bubble with a bouncing note inside. t animates the bob */
+export function thoughtBubble(x, y, s, t) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  // little bubbles
+  circle(-120, -120, 22, C.white); circle(-70, -168, 15, C.white); circle(-34, -202, 10, C.white);
+  ctx.lineWidth = 6; ctx.strokeStyle = C.ink;
+  for (const [cx, cy, r] of [[-120, -120, 22], [-70, -168, 15], [-34, -202, 10]]) { ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke(); }
+  // main bubble
+  rr(-200, -260, 400, 260, 40); ctx.fillStyle = C.white; ctx.fill(); ctx.lineWidth = 8; ctx.strokeStyle = C.ink; ctx.stroke();
+  // note bouncing inside
+  musicNote(0, -130 + Math.sin(t * 3) * 14, 0.9, Math.sin(t * 2) * 0.1);
+  ctx.restore();
+}
+
+/** a smartphone with a glowing screen. t animates the glow + a tiny note on screen */
+export function phone(x, y, s, t) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  rr(-95, -190, 190, 380, 34); ctx.fillStyle = C.ink; ctx.fill();
+  rr(-78, -172, 156, 344, 24); ctx.fillStyle = C.sky; ctx.fill();
+  // glowing screen
+  const glow = 0.5 + 0.5 * Math.sin(t * 4);
+  ctx.save(); ctx.globalAlpha = 0.25 * glow; ctx.fillStyle = C.cyan; ctx.fillRect(-78, -172, 156, 344); ctx.restore();
+  musicNote(0, -30 + Math.sin(t * 5) * 8, 0.7, Math.sin(t * 3) * 0.08, C.pink);
+  rr(-30, 90, 60, 18, 9); ctx.fillStyle = C.cyan; ctx.fill();
+  ctx.restore();
+}
+
+/** a fish-hook shape (the "hook" of a catchy song) */
+export function hookShape(x, y, s, rot = 0) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  ctx.strokeStyle = C.ink; ctx.lineWidth = 16; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(0, -190); ctx.lineTo(0, 20); ctx.stroke();
+  ctx.beginPath(); ctx.arc(0, 60, 70, 0, Math.PI * 1.7); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0, 130); ctx.lineTo(0, 40); ctx.stroke();
+  ctx.restore();
+}
+
+/** a shower scene: head, falling water, steam. t animates water */
+export function shower(x, y, s, t) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  // wall tiles
+  ctx.fillStyle = C.sky; ctx.fillRect(-540, -700, 1080, 1500);
+  ctx.strokeStyle = C.white; ctx.lineWidth = 6; ctx.globalAlpha = 0.6;
+  for (let i = 0; i < 9; i++) { ctx.beginPath(); ctx.moveTo(-540 + i * 120, -700); ctx.lineTo(-540 + i * 120, 800); ctx.stroke(); }
+  for (let j = 0; j < 6; j++) { ctx.beginPath(); ctx.moveTo(-540, -700 + j * 250); ctx.lineTo(540, -700 + j * 250); ctx.stroke(); }
+  ctx.globalAlpha = 1;
+  // pipe + head
+  ctx.strokeStyle = C.ink; ctx.lineWidth = 26; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(-400, -620); ctx.lineTo(-400, -420); ctx.lineTo(0, -420); ctx.stroke();
+  rr(-150, -420, 300, 60, 20); ctx.fillStyle = C.ink; ctx.fill();
+  // water streams
+  ctx.strokeStyle = C.cyan; ctx.lineWidth = 10; ctx.globalAlpha = 0.8;
+  for (let i = -4; i <= 4; i++) {
+    ctx.beginPath(); ctx.moveTo(i * 34, -380);
+    ctx.quadraticCurveTo(i * 40 + Math.sin(t * 6 + i) * 8, -200, i * 34, 40); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  // steam
+  ctx.fillStyle = C.white; ctx.globalAlpha = 0.35;
+  for (let i = 0; i < 5; i++) {
+    const sx = -260 + i * 130, sy = 260 + Math.sin(t * 2 + i) * 30;
+    ctx.beginPath(); ctx.arc(sx, sy, 70 + i * 8, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+/** a jigsaw puzzle piece. rot = rotation */
+export function puzzlePiece(x, y, s, rot = 0, color = C.cyan) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  ctx.beginPath(); ctx.moveTo(-90, -90);
+  ctx.lineTo(-30, -90); ctx.quadraticCurveTo(0, -130, 30, -90); ctx.lineTo(90, -90);
+  ctx.lineTo(90, -30); ctx.quadraticCurveTo(130, 0, 90, 30); ctx.lineTo(90, 90);
+  ctx.lineTo(30, 90); ctx.quadraticCurveTo(0, 130, -30, 90); ctx.lineTo(-90, 90);
+  ctx.lineTo(-90, 30); ctx.quadraticCurveTo(-130, 0, -90, -30); ctx.closePath();
+  ctx.fillStyle = color; ctx.fill(); ctx.lineWidth = 8; ctx.strokeStyle = C.ink; ctx.stroke();
+  ctx.restore();
+}
